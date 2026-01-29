@@ -1,16 +1,15 @@
 export async function onRequest(context) {
-  const { request, next } = context;
+  try {
+    const { request, next } = context;
 
-  const log = {
-    ip: request.headers.get("cf-connecting-ip"),
-    country: request.cf?.country,
-    method: request.method,
-    url: request.url,
-    userAgent: request.headers.get("user-agent"),
-    time: new Date().toISOString()
-  };
+    console.log({
+      ip: request.headers.get("cf-connecting-ip"),
+      url: request.url,
+      time: new Date().toISOString()
+    });
 
-  console.log(JSON.stringify(log));
-
-  return next();
+    return await next();
+  } catch (err) {
+    return new Response("Middleware error", { status: 500 });
+  }
 }
